@@ -1,0 +1,173 @@
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f0f0f0;
+}
+
+.background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+    background: linear-gradient(45deg, #87CEEB 0%, #98FB98 100%);
+}
+
+@keyframes seasonChange {
+    0% {
+        /* Spring */
+        background: linear-gradient(45deg, #87CEEB 0%, #98FB98 100%);
+    }
+    10% {
+        background: linear-gradient(45deg, #87CEEB 0%, #90EE90 100%);
+    }
+    15% {
+        background: linear-gradient(45deg, #89CFF0 0%, #98FB98 100%);
+    }
+    20% {
+        background: linear-gradient(45deg, #8BC34A 0%, #A5D6A7 100%);
+    }
+    25% {
+        background: linear-gradient(45deg, #90CAF9 0%, #81C784 100%);
+    }
+    30% {
+        background: linear-gradient(45deg, #92CAF9 0%, #88C784 100%);
+    }
+    35% {
+        background: linear-gradient(45deg, #95CAF9 0%, #90C784 100%);
+    }
+    40% {
+        background: linear-gradient(45deg, #98CAF9 0%, #95C784 100%);
+    }
+    45% {
+        background: linear-gradient(45deg, #9BC34A 0%, #98C784 100%);
+    }
+    50% {
+        background: linear-gradient(45deg, #A1887F 0%, #9CCC65 100%);
+    }
+    55% {
+        background: linear-gradient(45deg, #A4887F 0%, #9E965A 100%);
+    }
+    60% {
+        background: linear-gradient(45deg, #A6887F 0%, #A0965A 100%);
+    }
+    65% {
+        background: linear-gradient(45deg, #A8887F 0%, #A2965A 100%);
+    }
+    70% {
+        background: linear-gradient(45deg, #AA887F 0%, #A4965A 100%);
+    }
+    75% {
+        background: linear-gradient(45deg, #B0C4DE 0%, #A6965A 100%);
+    }
+    80% {
+        background: linear-gradient(45deg, #B0D4E6 0%, #A8B5C5 100%);
+    }
+    85% {
+        background: linear-gradient(45deg, #B0D8E6 0%, #AAC5D5 100%);
+    }
+    90% {
+        background: linear-gradient(45deg, #B0DCE6 0%, #ACD5E5 100%);
+    }
+    95% {
+        background: linear-gradient(45deg, #B0E0E6 0%, #AEE5F5 100%);
+    }
+    100% {
+        background: linear-gradient(45deg, #87CEEB 0%, #98FB98 100%);
+    }
+}
+
+.registration-form {
+    max-width: 400px;
+    margin: 2rem auto;
+    padding: 2rem 2rem 3rem 2rem;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.form-title {
+    margin: 0 0 2rem 0;
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: #333;
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    font-size: 0.875rem;
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 0.875rem;
+}
+
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.checkbox-group label {
+    font-size: 0.8rem;
+}
+
+button[type="submit"] {
+    float: right;
+}
+
+.logo-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto 2rem;
+    padding: 1rem;
+}
+
+.logo {
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.2));
+}
+
+.letter {
+    fill: none;
+    stroke: #ffffff;
+    stroke-dasharray: 300;
+    stroke-dashoffset: 300;
+    animation: stroke 4s linear infinite;
+    filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.3));
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+@keyframes stroke {
+    to {
+        stroke-dashoffset: -300;
+    }
+}
+
+.letter:nth-child(1) { animation-delay: 0s; }
+.letter:nth-child(2) { animation-delay: 0.5s; }
+.letter:nth-child(3) { animation-delay: 1s; }
+.letter:nth-child(4) { animation-delay: 1.5s; }
+.letter:nth-child(5) { animation-delay: 2s; }
+.letter:nth-child(6) { animation-delay: 2.5s; }
+.letter:nth-child(7) { animation-delay: 3s; } 

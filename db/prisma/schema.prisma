@@ -1,0 +1,38 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id          Int      @id @default(autoincrement())
+  phoneNumber String   @unique
+  optIn       Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model YarnColorRange {
+  id            Int            @id @default(autoincrement())
+  minTemp       Float
+  maxTemp       Float
+  colorName     String
+  dailyTemps    DailyTemp[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  @@unique([minTemp, maxTemp])
+}
+
+model DailyTemp {
+  id             Int           @id @default(autoincrement())
+  date           DateTime      @unique
+  highTemp       Float
+  yarnColorRange YarnColorRange @relation(fields: [colorRangeId], references: [id])
+  colorRangeId   Int
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+} 
