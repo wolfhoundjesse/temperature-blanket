@@ -63,19 +63,25 @@ const RegistrationPage = {
       m("form.registration-form", {
         onsubmit: async (e) => {
           e.preventDefault();
-          const phone = document.querySelector("#phone").value;
-          const optIn = document.querySelector("#opt-in").checked;
-          
-          // Store registration
-          localStorage.setItem('userPhone', phone);
-          localStorage.setItem('userOptIn', optIn);
+          try {
+            const phone = document.querySelector("#phone").value;
+            const optIn = document.querySelector("#opt-in").checked;
+            
+            // Store registration
+            localStorage.setItem('userPhone', phone);
+            localStorage.setItem('userOptIn', optIn);
 
-          // Check for yarn configuration
-          const yarnConfig = localStorage.getItem('yarnConfig');
-          if (!yarnConfig) {
-            m.route.set('/config');
-          } else {
-            m.route.set('/dashboard');
+            // Check for yarn configuration
+            const yarnConfig = localStorage.getItem('yarnConfig');
+            if (!yarnConfig) {
+              m.route.set('/config');
+            } else {
+              m.route.set('/dashboard');
+            }
+          } catch (e) {
+            console.error('Storage error:', e);
+            // Handle gracefully - maybe show an error message to user
+            alert('Unable to save registration. Please try again.');
           }
         }
       }, [
@@ -94,21 +100,36 @@ const RegistrationPage = {
   }
 };
 
+const checkStorage = () => {
+  try {
+    const userPhone = localStorage.getItem('userPhone');
+    const yarnConfig = localStorage.getItem('yarnConfig');
+    return { userPhone, yarnConfig };
+  } catch (e) {
+    console.warn('localStorage not available:', e);
+    return { userPhone: null, yarnConfig: null };
+  }
+};
+
 // Route configuration
 m.route(document.getElementById("app"), "/", {
   "/": {
     onmatch: () => {
-      const userPhone = localStorage.getItem('userPhone');
-      if (userPhone) {
-        const yarnConfig = localStorage.getItem('yarnConfig');
-        if (!yarnConfig) {
-          m.route.set('/config');
-        } else {
-          m.route.set('/dashboard');
+      try {
+        const { userPhone, yarnConfig } = checkStorage();
+        if (userPhone) {
+          if (!yarnConfig) {
+            m.route.set('/config');
+          } else {
+            m.route.set('/dashboard');
+          }
+          return null;
         }
-        return null;
+        return RegistrationPage;
+      } catch (e) {
+        console.error('Route error:', e);
+        return RegistrationPage;
       }
-      return RegistrationPage;
     }
   },
   "/config": YarnConfigPage,
