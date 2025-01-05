@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Mithril.js Progressive Web App",
   "main": "src/index.js",
+  "type": "module",
   "scripts": {
     "start": "webpack serve --open",
     "build": "webpack --mode production",

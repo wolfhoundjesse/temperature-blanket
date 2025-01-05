@@ -170,4 +170,22 @@ button[type="submit"] {
 .letter:nth-child(4) { animation-delay: 1.5s; }
 .letter:nth-child(5) { animation-delay: 2s; }
 .letter:nth-child(6) { animation-delay: 2.5s; }
-.letter:nth-child(7) { animation-delay: 3s; } 
+.letter:nth-child(7) { animation-delay: 3s; }
+
+.temp-range {
+    display: grid;
+    grid-template-columns: 1fr 1fr 2fr;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.temp-range input {
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.dashboard {
+    text-align: center;
+    padding: 2rem;
+} 
