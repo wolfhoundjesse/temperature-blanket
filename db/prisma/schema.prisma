@@ -35,4 +35,15 @@ model DailyTemp {
   colorRangeId   Int
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
+}
+
+model WeatherForecast {
+  id          Int      @id @default(autoincrement())
+  location    String
+  highTemp    Float
+  date        DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([location, date])
 } 
