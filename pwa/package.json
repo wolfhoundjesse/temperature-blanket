@@ -5,8 +5,8 @@
   "main": "src/index.js",
   "type": "module",
   "scripts": {
-    "start": "webpack serve --open",
-    "build": "webpack --mode production",
+    "start": "NODE_OPTIONS=--experimental-json-modules webpack serve --open",
+    "build": "NODE_OPTIONS=--experimental-json-modules webpack --mode production",
     "serve": "node server.js"
   },
   "dependencies": {
