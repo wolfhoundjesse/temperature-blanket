@@ -16,13 +16,14 @@ export async function fetchAndStoreWeatherForecast(location) {
     const lat = 39.0321;
     const lon = 76.5027;
 
-    const url = `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&exclude=minutely,hourly,alerts&units=metric&appid=${apiKey}`;
+    const url = `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&exclude=minutely,hourly,alerts&units=imperial&appid=${apiKey}`;
 
     const response = await axios.get(url);
     console.log("Weather API response:", {
       temp_max: response.data.current.temp,
       location: location,
       timestamp: new Date(),
+      units: "°F",
     });
 
     // Store in database
