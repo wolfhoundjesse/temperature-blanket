@@ -1,0 +1,265 @@
+{
+  "lastCompletedRow": "1/7/25",
+  "temperatures": [
+    {
+      "date": "1/1/25",
+      "temp": 47,
+      "color": "Light Pink"
+    },
+    {
+      "date": "1/2/25",
+      "temp": 40,
+      "color": "Dark Green"
+    },
+    {
+      "date": "1/3/25",
+      "temp": 42,
+      "color": "Dark Green"
+    },
+    {
+      "date": "1/4/25",
+      "temp": 31,
+      "color": "Light Purple"
+    },
+    {
+      "date": "1/5/25",
+      "temp": 34,
+      "color": "Dark Green"
+    },
+    {
+      "date": "1/6/25",
+      "temp": 31,
+      "color": "Light Purple"
+    },
+    {
+      "date": "1/7/25",
+      "temp": 33,
+      "color": "Dark Green"
+    },
+    {
+      "date": "1/8/25",
+      "temp": 29,
+      "color": "Light Purple"
+    },
+    {
+      "date": "1/9/25",
+      "temp": 30,
+      "color": "Light Purple"
+    },
+    {
+      "date": "1/10/25",
+      "temp": 34,
+      "color": "Dark Green"
+    },
+    {
+      "date": "1/11/25",
+      "temp": 34,
+      "color": "Dark Green"
+    },
+    {
+      "date": "1/12/25",
+      "temp": 38,
+      "color": "Dark Green"
+    },
+    {
+      "date": "1/13/25",
+      "temp": 44,
+      "color": "Light Pink"
+    },
+    {
+      "date": "1/14/25",
+      "temp": 33,
+      "color": "Dark Green"
+    },
+    {
+      "date": "1/15/25",
+      "temp": 31,
+      "color": "Light Purple"
+    },
+    {
+      "date": "1/16/25",
+      "temp": 33,
+      "color": "Dark Green"
+    },
+    {
+      "date": "1/17/25",
+      "temp": 42,
+      "color": "Dark Green"
+    },
+    {
+      "date": "1/18/25",
+      "temp": 45,
+      "color": "Light Pink"
+    },
+    {
+      "date": "1/19/25",
+      "temp": 36,
+      "color": "Dark Green"
+    },
+    {
+      "date": "1/20/25",
+      "temp": 27,
+      "color": "Light Purple"
+    },
+    {
+      "date": "1/21/25",
+      "temp": 20,
+      "color": "Blue"
+    },
+    {
+      "date": "1/22/25",
+      "temp": 23,
+      "color": "Light Purple"
+    },
+    {
+      "date": "1/23/25",
+      "temp": 31,
+      "color": "Light Purple"
+    },
+    {
+      "date": "1/24/25",
+      "temp": 34,
+      "color": "Dark Green"
+    },
+    {
+      "date": "1/25/25",
+      "temp": 37,
+      "color": "Dark Green"
+    },
+    {
+      "date": "1/26/25",
+      "temp": 43,
+      "color": "Dark Green"
+    },
+    {
+      "date": "1/27/25",
+      "temp": 42,
+      "color": "Dark Green"
+    },
+    {
+      "date": "1/28/25",
+      "temp": 45,
+      "color": "Light Pink"
+    },
+    {
+      "date": "1/29/25",
+      "temp": 58,
+      "color": "Purple"
+    },
+    {
+      "date": "1/30/25",
+      "temp": 43,
+      "color": "Dark Green"
+    },
+    {
+      "date": "1/31/25",
+      "temp": 52,
+      "color": "Light Pink"
+    },
+    {
+      "date": "2/1/25",
+      "temp": 53,
+      "color": "Light Pink"
+    },
+    {
+      "date": "2/2/25",
+      "temp": 39,
+      "color": "Dark Green"
+    },
+    {
+      "date": "2/3/25",
+      "temp": 51,
+      "color": "Light Pink"
+    },
+    {
+      "date": "2/4/25",
+      "temp": 53,
+      "color": "Light Pink"
+    },
+    {
+      "date": "2/5/25",
+      "temp": 37,
+      "color": "Dark Green"
+    },
+    {
+      "date": "2/6/25",
+      "temp": 51,
+      "color": "Light Pink"
+    },
+    {
+      "date": "2/7/25",
+      "temp": 49,
+      "color": "Light Pink"
+    },
+    {
+      "date": "2/8/25",
+      "temp": 36,
+      "color": "Dark Green"
+    },
+    {
+      "date": "2/9/25",
+      "temp": 44,
+      "color": "Light Pink"
+    },
+    {
+      "date": "2/10/25",
+      "temp": 42,
+      "color": "Dark Green"
+    },
+    {
+      "date": "2/11/25",
+      "temp": 36,
+      "color": "Dark Green"
+    },
+    {
+      "date": "2/12/25",
+      "temp": 37,
+      "color": "Dark Green"
+    },
+    {
+      "date": "2/13/25",
+      "temp": 52,
+      "color": "Light Pink"
+    },
+    {
+      "date": "2/14/25",
+      "temp": 39,
+      "color": "Dark Green"
+    },
+    {
+      "date": "2/15/25",
+      "temp": 43,
+      "color": "Dark Green"
+    },
+    {
+      "date": "2/16/25",
+      "temp": 59,
+      "color": "Purple"
+    },
+    {
+      "date": "2/17/25",
+      "temp": 38,
+      "color": "Dark Green"
+    },
+    {
+      "date": "2/18/25",
+      "temp": 32,
+      "color": "Light Purple"
+    },
+    {
+      "date": "2/19/25",
+      "temp": 28,
+      "color": "Light Purple"
+    },
+    {
+      "date": "2/20/25",
+      "temp": 28,
+      "color": "Light Purple"
+    },
+    {
+      "date": "2/21/25",
+      "temp": 37,
+      "color": "Dark Green"
+    }
+  ]
+}

@@ -53,6 +53,9 @@ function addTableRow(date, temperature, color) {
         <td>${color}</td>
     `;
 
+  // Add click handler to the row
+  row.addEventListener("click", () => handleRowClick(date));
+
   tableBody.insertBefore(row, tableBody.firstChild);
 }
 
@@ -68,11 +71,6 @@ async function updateTable() {
 
   const color = getYarnColor(temperature);
   addTableRow(today, temperature, color);
-
-  // Save to localStorage
-  const savedData = JSON.parse(localStorage.getItem("temperatureData") || "[]");
-  savedData.unshift({ date: today, temperature, color });
-  localStorage.setItem("temperatureData", JSON.stringify(savedData));
 }
 
 // Load saved data on page load
@@ -97,3 +95,148 @@ function checkUpdateTime() {
 
 // Check every minute if it's time to update
 setInterval(checkUpdateTime, 60000);
+
+// Function to insert historical data with corrected colors
+function insertHistoricalData() {
+  const historicalData = [
+    { date: "1/1/25", temp: 47, color: "Light Pink" },
+    { date: "1/2/25", temp: 40, color: "Dark Green" },
+    { date: "1/3/25", temp: 42, color: "Dark Green" },
+    { date: "1/4/25", temp: 31, color: "Light Purple" },
+    { date: "1/5/25", temp: 34, color: "Dark Green" },
+    { date: "1/6/25", temp: 31, color: "Light Purple" },
+    { date: "1/7/25", temp: 33, color: "Dark Green" },
+    { date: "1/8/25", temp: 29, color: "Light Purple" },
+    { date: "1/9/25", temp: 30, color: "Light Purple" },
+    { date: "1/10/25", temp: 34, color: "Dark Green" },
+    { date: "1/11/25", temp: 34, color: "Dark Green" },
+    { date: "1/12/25", temp: 38, color: "Dark Green" },
+    { date: "1/13/25", temp: 44, color: "Light Pink" },
+    { date: "1/14/25", temp: 33, color: "Dark Green" },
+    { date: "1/15/25", temp: 31, color: "Light Purple" },
+    { date: "1/16/25", temp: 33, color: "Dark Green" },
+    { date: "1/17/25", temp: 42, color: "Dark Green" },
+    { date: "1/18/25", temp: 45, color: "Light Pink" },
+    { date: "1/19/25", temp: 36, color: "Dark Green" },
+    { date: "1/20/25", temp: 27, color: "Light Purple" },
+    { date: "1/21/25", temp: 20, color: "Blue" },
+    { date: "1/22/25", temp: 23, color: "Light Purple" },
+    { date: "1/23/25", temp: 31, color: "Light Purple" },
+    { date: "1/24/25", temp: 34, color: "Dark Green" },
+    { date: "1/25/25", temp: 37, color: "Dark Green" },
+    { date: "1/26/25", temp: 43, color: "Dark Green" },
+    { date: "1/27/25", temp: 42, color: "Dark Green" },
+    { date: "1/28/25", temp: 45, color: "Light Pink" },
+    { date: "1/30/25", temp: 43, color: "Dark Green" },
+    { date: "1/31/25", temp: 52, color: "Light Pink" },
+    { date: "2/1/25", temp: 53, color: "Light Pink" },
+    { date: "2/2/25", temp: 39, color: "Dark Green" },
+    { date: "2/3/25", temp: 51, color: "Light Pink" },
+    { date: "2/4/25", temp: 53, color: "Light Pink" },
+    { date: "2/5/25", temp: 37, color: "Dark Green" },
+    { date: "2/6/25", temp: 51, color: "Light Pink" },
+    { date: "2/8/25", temp: 36, color: "Dark Green" },
+    { date: "2/10/25", temp: 42, color: "Dark Green" },
+    { date: "2/12/25", temp: 37, color: "Dark Green" },
+    { date: "2/13/25", temp: 52, color: "Light Pink" },
+    { date: "2/14/25", temp: 39, color: "Dark Green" },
+    { date: "2/15/25", temp: 43, color: "Dark Green" },
+    { date: "2/16/25", temp: 59, color: "Purple" },
+    { date: "2/17/25", temp: 38, color: "Dark Green" },
+    { date: "2/18/25", temp: 32, color: "Light Purple" },
+    { date: "2/19/25", temp: 28, color: "Light Purple" },
+    { date: "2/21/25", temp: 37, color: "Dark Green" },
+  ];
+
+  // Clear existing data
+  localStorage.clear();
+  const tableBody = document.getElementById("tableBody");
+  tableBody.innerHTML = "";
+
+  // Insert each record
+  historicalData.reverse().forEach(({ date, temp, color }) => {
+    addTableRow(date, temp, color);
+  });
+}
+
+// Call this function when the page loads
+window.addEventListener("load", () => {
+  insertHistoricalData();
+});
+
+// Add these styles to mark completed rows
+const style = document.createElement("style");
+style.textContent = `
+  .completed-row {
+    background-color: #e8f5e9 !important;  /* Light green background */
+  }
+  tr {
+    cursor: pointer;  /* Show pointer cursor on rows */
+  }
+`;
+document.head.appendChild(style);
+
+async function loadHistoricalData() {
+  try {
+    const response = await fetch("/temperature-data");
+    if (!response.ok) {
+      throw new Error("Failed to load temperature data");
+    }
+    const data = await response.json();
+
+    // Clear existing table
+    const tableBody = document.getElementById("tableBody");
+    tableBody.innerHTML = "";
+
+    // Add each record to the table
+    data.temperatures.reverse().forEach(({ date, temp, color }) => {
+      addTableRow(date, temp, color);
+    });
+
+    // Mark completed rows if lastCompletedRow exists
+    if (data.lastCompletedRow) {
+      markCompletedRows(data.lastCompletedRow);
+    }
+  } catch (error) {
+    console.error("Error loading temperature data:", error);
+  }
+}
+
+async function handleRowClick(clickedDate) {
+  try {
+    // Update the server with the new lastCompletedRow
+    const response = await fetch("/update-completed", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ lastCompletedRow: clickedDate }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to update completed rows");
+    }
+
+    // Update the UI
+    markCompletedRows(clickedDate);
+  } catch (error) {
+    console.error("Error updating completed rows:", error);
+  }
+}
+
+function markCompletedRows(lastCompletedDate) {
+  const rows = document.querySelectorAll("#tableBody tr");
+  const lastCompleted = new Date(lastCompletedDate);
+
+  rows.forEach((row) => {
+    const rowDate = new Date(row.cells[0].textContent);
+    if (rowDate <= lastCompleted) {
+      row.classList.add("completed-row");
+    } else {
+      row.classList.remove("completed-row");
+    }
+  });
+}
+
+// Call this function when the page loads
+window.addEventListener("load", loadHistoricalData);
