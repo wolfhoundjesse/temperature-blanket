@@ -43,10 +43,52 @@ async function fetchTemperature() {
   }
 }
 
-function addTableRow(date, temperature, color) {
+function addMonthHeader(date) {
+  const [month, , year] = date.split("/");
+  const monthName = MONTHS[parseInt(month) - 1];
   const tableBody = document.getElementById("tableBody");
   const row = document.createElement("tr");
+  row.className = "month-header";
 
+  // Calculate top position for sticky behavior
+  const top = document.querySelector("thead").offsetHeight;
+  row.style.top = `${top}px`;
+
+  const cell = document.createElement("td");
+  cell.colSpan = 3;
+
+  // Check if month image exists
+  const img = new Image();
+  const imgPath = `/images/months/${monthName.toLowerCase()}.png`;
+
+  img.onload = () => {
+    cell.innerHTML = `<img src="${imgPath}" alt="${monthName} ${year}" />`;
+  };
+
+  img.onerror = () => {
+    cell.innerHTML = `${monthName} ${year}`;
+  };
+
+  img.src = imgPath;
+
+  row.appendChild(cell);
+  tableBody.appendChild(row);
+}
+
+function addTableRow(date, temperature, color) {
+  const tableBody = document.getElementById("tableBody");
+
+  // Check if we need to add a month header
+  const [month] = date.split("/");
+  const lastRow = tableBody.lastElementChild;
+  const lastDate = lastRow?.cells[0]?.textContent;
+  const [lastMonth] = lastDate?.split("/") || [];
+
+  if (!lastDate || month !== lastMonth) {
+    addMonthHeader(date);
+  }
+
+  const row = document.createElement("tr");
   row.innerHTML = `
         <td>${date}</td>
         <td>${temperature}°F</td>
@@ -56,7 +98,7 @@ function addTableRow(date, temperature, color) {
   // Add click handler to the row
   row.addEventListener("click", () => handleRowClick(date));
 
-  tableBody.insertBefore(row, tableBody.firstChild);
+  tableBody.appendChild(row);
 }
 
 async function updateTable() {
@@ -338,7 +380,14 @@ function updateUI(data) {
   const tableBody = document.getElementById("tableBody");
   tableBody.innerHTML = "";
 
-  data.temperatures.reverse().forEach(({ date, temp, color }) => {
+  // Sort data from oldest to newest
+  const sortedData = [...data.temperatures].sort((a, b) => {
+    const dateA = new Date(a.date);
+    const dateB = new Date(b.date);
+    return dateA - dateB;
+  });
+
+  sortedData.forEach(({ date, temp, color }) => {
     addTableRow(date, temp, color);
   });
 
@@ -354,13 +403,6 @@ function updateUI(data) {
 
 function updateLastUpdatedDisplay(timestamp) {
   let lastUpdatedDiv = document.getElementById("lastUpdated");
-  if (!lastUpdatedDiv) {
-    lastUpdatedDiv = document.createElement("div");
-    lastUpdatedDiv.id = "lastUpdated";
-    lastUpdatedDiv.style.cssText =
-      "text-align: center; color: #666; margin-top: 10px; font-size: 0.8em;";
-    document.querySelector("table").after(lastUpdatedDiv);
-  }
   const date = new Date(timestamp);
   lastUpdatedDiv.textContent = `Last updated: ${date.toLocaleString()}`;
 }

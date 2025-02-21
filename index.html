@@ -12,7 +12,7 @@
         }
         table {
             width: 100%;
-            max-width: 800px;
+            max-width: 600px;
             margin: 0 auto;
             border-collapse: collapse;
             background-color: white;
@@ -44,11 +44,11 @@
             cursor: pointer;  /* Show pointer cursor on rows */
         }
         .table-container {
-            height: calc(100vh - 150px); /* Account for header and margins */
+            max-width: 600px;
+            height: calc(100vh - 150px);
             overflow-y: auto;
             position: relative;
             margin: 20px auto;
-            max-width: 800px;
         }
         
         #jumpToLastCompleted {
@@ -93,6 +93,64 @@
             color: #4CAF50;
             font-weight: bold;
         }
+        
+        /* Sticky header styles */
+        thead tr {
+            position: sticky;
+            top: 0;
+            z-index: 3;  /* Increased z-index */
+            background: white;
+        }
+        
+        .month-header {
+            position: sticky;
+            background: #f8f9fa;
+            z-index: 2;  /* Between thead and regular rows */
+            border-bottom: 1px solid #dee2e6;
+            text-align: center;
+            font-size: 1.2em;
+            color: #495057;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+        
+        .month-header td {
+            padding: 8px;
+        }
+        
+        .month-header img {
+            max-height: 40px;
+            width: auto;
+        }
+        
+        /* Ensure sticky elements have a background */
+        th {
+            background: #4CAF50 !important;
+        }
+        
+        /* Ensure regular rows appear below sticky elements */
+        tbody tr:not(.month-header) {
+            position: relative;
+            z-index: 1;
+        }
+        #lastUpdated {
+            text-align: center;
+            color: #666;
+            margin: 10px auto;
+            font-size: 0.8em;
+            max-width: 600px;
+        }
+        
+        /* Column-specific styles */
+        th:nth-child(1), td:nth-child(1) { width: 40%; }  /* Date column */
+        th:nth-child(2), td:nth-child(2) { 
+            width: 30%; 
+            text-align: center;
+        }
+        th:nth-child(3), td:nth-child(3) { 
+            width: 30%; 
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -111,6 +169,7 @@
             </tbody>
         </table>
     </div>
+    <div id="lastUpdated"></div>
     <button id="jumpToLastCompleted">↑ Jump to Last Completed</button>
     <script src="script.js"></script>
 </body>
