@@ -282,7 +282,6 @@ async function loadHistoricalData(forceRefresh = false) {
   }
 }
 
-// Add after DATA_VERSION declaration
 const MONTHS = [
   "January",
   "February",
@@ -298,73 +297,115 @@ const MONTHS = [
   "December",
 ];
 
-function createMonthPicker(data) {
-  const monthPicker = document.getElementById("monthPicker");
+const MONTHS_SHORT = [
+  "JAN",
+  "FEB",
+  "MAR",
+  "APR",
+  "MAY",
+  "JUN",
+  "JUL",
+  "AUG",
+  "SEP",
+  "OCT",
+  "NOV",
+  "DEC",
+];
+
+function createMonthPickers(data) {
+  createVerticalMonthPicker(data);
+  createGridMonthPicker(data);
+}
+
+function createVerticalMonthPicker(data) {
+  const monthPicker = document.getElementById("monthPickerVertical");
   monthPicker.innerHTML = "";
 
-  // Get available months from data
-  const availableMonths = new Set(
+  const availableMonths = getAvailableMonths(data);
+
+  MONTHS.forEach((month, index) => {
+    const button = createMonthButton(month, index, availableMonths);
+    monthPicker.appendChild(button);
+  });
+}
+
+function createGridMonthPicker(data) {
+  const monthPicker = document.getElementById("monthPickerGrid");
+  monthPicker.innerHTML = "";
+
+  const availableMonths = getAvailableMonths(data);
+
+  MONTHS_SHORT.forEach((month, index) => {
+    const button = createMonthButton(month, index, availableMonths);
+    monthPicker.appendChild(button);
+  });
+}
+
+function createMonthButton(label, index, availableMonths) {
+  const button = document.createElement("button");
+  button.type = "button"; // Add button type
+  button.className = "month-button";
+  button.textContent = label;
+  button.disabled = !availableMonths.has(index);
+
+  if (!button.disabled) {
+    button.addEventListener("click", () => scrollToMonth(index + 1));
+  }
+
+  return button;
+}
+
+function getAvailableMonths(data) {
+  return new Set(
     data.temperatures.map((t) => {
       const [month] = t.date.split("/");
       return parseInt(month) - 1;
     })
   );
-
-  MONTHS.forEach((month, index) => {
-    const button = document.createElement("button");
-    button.className = "month-button";
-    button.textContent = month;
-    button.disabled = !availableMonths.has(index);
-
-    if (!button.disabled) {
-      button.addEventListener("click", () => scrollToMonth(index + 1));
-    }
-
-    monthPicker.appendChild(button);
-  });
-
-  // Start monitoring scroll position
-  observeTableScroll();
 }
 
-function scrollToMonth(monthNumber) {
-  const rows = document.querySelectorAll("#tableBody tr");
-  for (const row of rows) {
-    const [month] = row.cells[0].textContent.split("/");
-    if (parseInt(month) === monthNumber) {
-      const container = document.querySelector(".table-container");
-      container.scrollTop = row.offsetTop;
-      // Trigger scroll event to update active state
-      container.dispatchEvent(new Event("scroll"));
-      break;
-    }
-  }
-}
-
+// Update the observeTableScroll function to handle both pickers
 function observeTableScroll() {
   const container = document.querySelector(".table-container");
-  const buttons = document.querySelectorAll(".month-button");
+  const verticalButtons = document.querySelectorAll(
+    ".month-picker-vertical .month-button"
+  );
+  const gridButtons = document.querySelectorAll(
+    ".month-picker-grid .month-button"
+  );
 
   const updateActiveMonth = () => {
-    const rows = document.querySelectorAll("#tableBody tr");
-    const containerTop = container.scrollTop;
-    const containerHeight = container.clientHeight;
+    const rows = document.querySelectorAll("#tableBody tr:not(.month-header)");
+    const containerRect = container.getBoundingClientRect();
 
-    // Find visible rows - check first row that's fully or partially visible
+    // Find the first visible row
     let visibleMonth = null;
     for (const row of rows) {
-      const rowTop = row.offsetTop - containerTop;
-      // Consider row visible if it's slightly above or within viewport
-      if (rowTop < 50) {
-        // Allow 50px buffer above
+      if (!row.cells[0]) continue;
+      const rect = row.getBoundingClientRect();
+      // Check if row is visible in the container
+      if (rect.top >= containerRect.top && rect.top <= containerRect.bottom) {
         const [month] = row.cells[0].textContent.split("/");
         visibleMonth = parseInt(month) - 1;
+        break; // Stop at first visible row
       }
     }
 
-    // Update active state
-    buttons.forEach((button, index) => {
-      button.classList.toggle("active", index === visibleMonth);
+    // Force style update for both pickers
+    verticalButtons.forEach((button, index) => {
+      if (index === visibleMonth) {
+        button.classList.add("active");
+      } else {
+        button.classList.remove("active");
+      }
+    });
+
+    gridButtons.forEach((button, index) => {
+      if (index === visibleMonth) {
+        button.classList.add("active");
+      } else {
+        button.classList.remove("active");
+      }
     });
   };
 
@@ -372,10 +413,10 @@ function observeTableScroll() {
   container.addEventListener("scroll", updateActiveMonth);
 
   // Initial update
-  setTimeout(updateActiveMonth, 0);
+  window.requestAnimationFrame(updateActiveMonth);
 }
 
-// Modify updateUI function to include month picker
+// Update the updateUI function
 function updateUI(data) {
   const tableBody = document.getElementById("tableBody");
   tableBody.innerHTML = "";
@@ -391,7 +432,7 @@ function updateUI(data) {
     addTableRow(date, temp, color);
   });
 
-  createMonthPicker(data);
+  createMonthPickers(data);
 
   if (data.lastCompletedRow) {
     markCompletedRows(data.lastCompletedRow);
@@ -493,3 +534,17 @@ function scrollToLastCompleted() {
 document
   .getElementById("jumpToLastCompleted")
   .addEventListener("click", scrollToLastCompleted);
+
+function scrollToMonth(monthNumber) {
+  const rows = document.querySelectorAll("#tableBody tr");
+  for (const row of rows) {
+    const [month] = row.cells[0].textContent.split("/");
+    if (parseInt(month) === monthNumber) {
+      const container = document.querySelector(".table-container");
+      container.scrollTop = row.offsetTop;
+      // Trigger scroll event to update active state
+      container.dispatchEvent(new Event("scroll"));
+      break;
+    }
+  }
+}

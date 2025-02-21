@@ -63,7 +63,7 @@
             cursor: pointer;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
-        .month-picker {
+        .month-picker-vertical {
             position: fixed;
             left: 20px;
             top: 50%;
@@ -73,7 +73,7 @@
             border-radius: 4px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
-        .month-button {
+        .month-picker-vertical .month-button {
             display: block;
             width: 100%;
             padding: 8px 12px;
@@ -83,6 +83,29 @@
             cursor: pointer;
             text-align: left;
             color: #666;
+        }
+        .month-picker-grid {
+            position: fixed;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: white;
+            padding: 10px;
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 5px;
+            width: 150px;
+        }
+        .month-picker-grid .month-button {
+            padding: 8px 4px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            text-align: center;
+            color: #666;
+            font-size: 0.9em;
         }
         .month-button:disabled {
             color: #ccc;
@@ -155,7 +178,8 @@
 </head>
 <body>
     <h1>2025 Temperature Blanket</h1>
-    <div class="month-picker" id="monthPicker"></div>
+    <div class="month-picker-vertical" id="monthPickerVertical"></div>
+    <div class="month-picker-grid" id="monthPickerGrid"></div>
     <div class="table-container">
         <table id="temperatureTable">
             <thead>
