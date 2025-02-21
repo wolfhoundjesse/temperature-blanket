@@ -36,4 +36,10 @@ os.chdir(os.path.dirname(os.path.abspath(__file__)))
 # Create server
 server = HTTPServer(('0.0.0.0', 8080), ConfigHandler)
 print('Server started at http://0.0.0.0:8080')
-server.serve_forever() 
+server.serve_forever()
+
+if __name__ == '__main__':
+    server_address = ('', 8000)  # Run on port 8000
+    httpd = HTTPServer(server_address, ConfigHandler)
+    print('Server running on port 8000...')
+    httpd.serve_forever() 
