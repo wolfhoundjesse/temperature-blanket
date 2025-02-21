@@ -2,6 +2,7 @@ from http.server import HTTPServer, SimpleHTTPRequestHandler
 import os
 from dotenv import load_dotenv
 import json
+from datetime import datetime
 
 # Load environment variables
 load_dotenv()
@@ -46,14 +47,12 @@ class ConfigHandler(SimpleHTTPRequestHandler):
             data = json.loads(post_data.decode('utf-8'))
             
             try:
-                # Read current data
                 with open(TEMPERATURE_DATA_FILE, 'r') as f:
                     file_data = json.load(f)
                 
-                # Update lastCompletedRow
                 file_data['lastCompletedRow'] = data['lastCompletedRow']
+                file_data['lastUpdated'] = datetime.utcnow().isoformat() + 'Z'
                 
-                # Write updated data back to file
                 with open(TEMPERATURE_DATA_FILE, 'w') as f:
                     json.dump(file_data, f, indent=2)
                 

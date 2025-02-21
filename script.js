@@ -171,52 +171,120 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-async function loadHistoricalData() {
+const DATA_VERSION = 1; // Used to check if local storage data needs migration
+
+// Add refresh button to the page
+const refreshButton = document.createElement("button");
+refreshButton.textContent = "↻ Refresh Data";
+refreshButton.style.cssText =
+  "position: fixed; top: 20px; right: 20px; padding: 10px; background: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer;";
+refreshButton.addEventListener("click", () => loadHistoricalData(true));
+document.body.appendChild(refreshButton);
+
+async function loadHistoricalData(forceRefresh = false) {
   try {
     let data;
-    const localData = localStorage.getItem("temperatureData");
+    let shouldFetchFromServer = forceRefresh;
 
-    if (localData) {
-      const parsedData = JSON.parse(localData);
-      const lastDate = new Date(
-        parsedData.temperatures[parsedData.temperatures.length - 1].date
-      );
-      const today = new Date();
+    if (!shouldFetchFromServer) {
+      try {
+        const localData = localStorage.getItem("temperatureData");
+        if (localData) {
+          const parsedData = JSON.parse(localData);
 
-      // If local data is current, use it
-      if (lastDate.setHours(0, 0, 0, 0) >= today.setHours(0, 0, 0, 0)) {
-        data = parsedData;
-      } else {
-        // Data is old, fetch from server
+          // Version check
+          if (parsedData.version !== DATA_VERSION) {
+            shouldFetchFromServer = true;
+          } else {
+            // Check if data is stale (over 24 hours old)
+            const lastUpdated = new Date(parsedData.lastUpdated);
+            const now = new Date();
+            if (now - lastUpdated > 24 * 60 * 60 * 1000) {
+              shouldFetchFromServer = true;
+            } else {
+              data = parsedData;
+            }
+          }
+        } else {
+          shouldFetchFromServer = true;
+        }
+      } catch (e) {
+        console.error("Error parsing local storage data:", e);
+        shouldFetchFromServer = true;
+      }
+    }
+
+    if (shouldFetchFromServer) {
+      try {
         const response = await fetch("/temperature-data");
         if (!response.ok) throw new Error("Failed to load temperature data");
         data = await response.json();
+        data.lastUpdated = new Date().toISOString();
+        data.version = DATA_VERSION;
         localStorage.setItem("temperatureData", JSON.stringify(data));
+      } catch (e) {
+        if (!navigator.onLine) {
+          alert("You're offline. Showing cached data if available.");
+          data = JSON.parse(localStorage.getItem("temperatureData"));
+          if (!data) throw new Error("No cached data available");
+        } else {
+          throw e;
+        }
       }
-    } else {
-      // No local data, fetch from server
-      const response = await fetch("/temperature-data");
-      if (!response.ok) throw new Error("Failed to load temperature data");
-      data = await response.json();
-      localStorage.setItem("temperatureData", JSON.stringify(data));
     }
 
-    // Clear existing table
-    const tableBody = document.getElementById("tableBody");
-    tableBody.innerHTML = "";
-
-    // Add each record to the table
-    data.temperatures.reverse().forEach(({ date, temp, color }) => {
-      addTableRow(date, temp, color);
-    });
-
-    // Mark completed rows if lastCompletedRow exists
-    if (data.lastCompletedRow) {
-      markCompletedRows(data.lastCompletedRow);
-    }
+    updateUI(data);
   } catch (error) {
     console.error("Error loading temperature data:", error);
+    showError("Failed to load data. Please try again later.");
   }
+}
+
+function updateUI(data) {
+  const tableBody = document.getElementById("tableBody");
+  tableBody.innerHTML = "";
+
+  data.temperatures.reverse().forEach(({ date, temp, color }) => {
+    addTableRow(date, temp, color);
+  });
+
+  if (data.lastCompletedRow) {
+    markCompletedRows(data.lastCompletedRow);
+  }
+
+  // Update last updated timestamp
+  updateLastUpdatedDisplay(data.lastUpdated);
+}
+
+function updateLastUpdatedDisplay(timestamp) {
+  let lastUpdatedDiv = document.getElementById("lastUpdated");
+  if (!lastUpdatedDiv) {
+    lastUpdatedDiv = document.createElement("div");
+    lastUpdatedDiv.id = "lastUpdated";
+    lastUpdatedDiv.style.cssText =
+      "text-align: center; color: #666; margin-top: 10px; font-size: 0.8em;";
+    document.querySelector("table").after(lastUpdatedDiv);
+  }
+  const date = new Date(timestamp);
+  lastUpdatedDiv.textContent = `Last updated: ${date.toLocaleString()}`;
+}
+
+function showError(message) {
+  const errorDiv = document.createElement("div");
+  errorDiv.style.cssText =
+    "position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #f44336; color: white; padding: 10px; border-radius: 4px; z-index: 1000;";
+  errorDiv.textContent = message;
+  document.body.appendChild(errorDiv);
+  setTimeout(() => errorDiv.remove(), 5000);
+}
+
+// Service Worker Registration
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/sw.js").catch((err) => {
+      console.error("ServiceWorker registration failed:", err);
+    });
+  });
 }
 
 async function handleRowClick(clickedDate) {
