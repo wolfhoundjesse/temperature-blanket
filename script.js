@@ -250,9 +250,9 @@ function updateUI(data) {
 
   if (data.lastCompletedRow) {
     markCompletedRows(data.lastCompletedRow);
+    setTimeout(scrollToLastCompleted, 0);
   }
 
-  // Update last updated timestamp
   updateLastUpdatedDisplay(data.lastUpdated);
 }
 
@@ -330,3 +330,28 @@ function markCompletedRows(lastCompletedDate) {
 
 // Call this function when the page loads
 window.addEventListener("load", loadHistoricalData);
+
+function scrollToLastCompleted() {
+  const lastCompletedDate = JSON.parse(
+    localStorage.getItem("temperatureData")
+  )?.lastCompletedRow;
+  if (!lastCompletedDate) return;
+
+  const rows = document.querySelectorAll("#tableBody tr");
+  for (const row of rows) {
+    if (row.cells[0].textContent === lastCompletedDate) {
+      const container = document.querySelector(".table-container");
+      const rowTop = row.offsetTop;
+      const containerHeight = container.clientHeight;
+
+      // Scroll to center the row
+      container.scrollTop = rowTop - containerHeight / 2 + row.offsetHeight / 2;
+      break;
+    }
+  }
+}
+
+// Add jump button handler
+document
+  .getElementById("jumpToLastCompleted")
+  .addEventListener("click", scrollToLastCompleted);

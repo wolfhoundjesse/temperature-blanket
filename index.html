@@ -43,21 +43,44 @@
         tr {
             cursor: pointer;  /* Show pointer cursor on rows */
         }
+        .table-container {
+            height: calc(100vh - 150px); /* Account for header and margins */
+            overflow-y: auto;
+            position: relative;
+            margin: 20px auto;
+            max-width: 800px;
+        }
+        
+        #jumpToLastCompleted {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
     </style>
 </head>
 <body>
     <h1>2025 Temperature Blanket</h1>
-    <table id="temperatureTable">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>High Temp (°F)</th>
-                <th>Yarn Color</th>
-            </tr>
-        </thead>
-        <tbody id="tableBody">
-        </tbody>
-    </table>
+    <div class="table-container">
+        <table id="temperatureTable">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>High Temp (°F)</th>
+                    <th>Yarn Color</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+            </tbody>
+        </table>
+    </div>
+    <button id="jumpToLastCompleted">↑ Jump to Last Completed</button>
     <script src="script.js"></script>
 </body>
 </html> 
