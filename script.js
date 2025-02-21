@@ -173,11 +173,33 @@ document.head.appendChild(style);
 
 async function loadHistoricalData() {
   try {
-    const response = await fetch("/temperature-data");
-    if (!response.ok) {
-      throw new Error("Failed to load temperature data");
+    let data;
+    const localData = localStorage.getItem("temperatureData");
+
+    if (localData) {
+      const parsedData = JSON.parse(localData);
+      const lastDate = new Date(
+        parsedData.temperatures[parsedData.temperatures.length - 1].date
+      );
+      const today = new Date();
+
+      // If local data is current, use it
+      if (lastDate.setHours(0, 0, 0, 0) >= today.setHours(0, 0, 0, 0)) {
+        data = parsedData;
+      } else {
+        // Data is old, fetch from server
+        const response = await fetch("/temperature-data");
+        if (!response.ok) throw new Error("Failed to load temperature data");
+        data = await response.json();
+        localStorage.setItem("temperatureData", JSON.stringify(data));
+      }
+    } else {
+      // No local data, fetch from server
+      const response = await fetch("/temperature-data");
+      if (!response.ok) throw new Error("Failed to load temperature data");
+      data = await response.json();
+      localStorage.setItem("temperatureData", JSON.stringify(data));
     }
-    const data = await response.json();
 
     // Clear existing table
     const tableBody = document.getElementById("tableBody");
@@ -199,7 +221,6 @@ async function loadHistoricalData() {
 
 async function handleRowClick(clickedDate) {
   try {
-    // Update the server with the new lastCompletedRow
     const response = await fetch("/update-completed", {
       method: "POST",
       headers: {
@@ -211,6 +232,11 @@ async function handleRowClick(clickedDate) {
     if (!response.ok) {
       throw new Error("Failed to update completed rows");
     }
+
+    // Update local storage
+    const localData = JSON.parse(localStorage.getItem("temperatureData"));
+    localData.lastCompletedRow = clickedDate;
+    localStorage.setItem("temperatureData", JSON.stringify(localData));
 
     // Update the UI
     markCompletedRows(clickedDate);

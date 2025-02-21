@@ -6,6 +6,8 @@ import json
 # Load environment variables
 load_dotenv()
 
+TEMPERATURE_DATA_FILE = 'temperature_data.json'
+
 class ConfigHandler(SimpleHTTPRequestHandler):
     def send_json_response(self, data):
         self.send_response(200)
