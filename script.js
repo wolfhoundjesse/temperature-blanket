@@ -159,11 +159,6 @@ function insertHistoricalData() {
   });
 }
 
-// Call this function when the page loads
-window.addEventListener("load", () => {
-  insertHistoricalData();
-});
-
 // Add these styles to mark completed rows
 const style = document.createElement("style");
 style.textContent = `
@@ -230,7 +225,8 @@ function markCompletedRows(lastCompletedDate) {
 
   rows.forEach((row) => {
     const rowDate = new Date(row.cells[0].textContent);
-    if (rowDate <= lastCompleted) {
+    // Ensure we're comparing just the dates, not the times
+    if (rowDate.setHours(0, 0, 0, 0) <= lastCompleted.setHours(0, 0, 0, 0)) {
       row.classList.add("completed-row");
     } else {
       row.classList.remove("completed-row");
