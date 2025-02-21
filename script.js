@@ -240,6 +240,100 @@ async function loadHistoricalData(forceRefresh = false) {
   }
 }
 
+// Add after DATA_VERSION declaration
+const MONTHS = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
+function createMonthPicker(data) {
+  const monthPicker = document.getElementById("monthPicker");
+  monthPicker.innerHTML = "";
+
+  // Get available months from data
+  const availableMonths = new Set(
+    data.temperatures.map((t) => {
+      const [month] = t.date.split("/");
+      return parseInt(month) - 1;
+    })
+  );
+
+  MONTHS.forEach((month, index) => {
+    const button = document.createElement("button");
+    button.className = "month-button";
+    button.textContent = month;
+    button.disabled = !availableMonths.has(index);
+
+    if (!button.disabled) {
+      button.addEventListener("click", () => scrollToMonth(index + 1));
+    }
+
+    monthPicker.appendChild(button);
+  });
+
+  // Start monitoring scroll position
+  observeTableScroll();
+}
+
+function scrollToMonth(monthNumber) {
+  const rows = document.querySelectorAll("#tableBody tr");
+  for (const row of rows) {
+    const [month] = row.cells[0].textContent.split("/");
+    if (parseInt(month) === monthNumber) {
+      const container = document.querySelector(".table-container");
+      container.scrollTop = row.offsetTop;
+      // Trigger scroll event to update active state
+      container.dispatchEvent(new Event("scroll"));
+      break;
+    }
+  }
+}
+
+function observeTableScroll() {
+  const container = document.querySelector(".table-container");
+  const buttons = document.querySelectorAll(".month-button");
+
+  const updateActiveMonth = () => {
+    const rows = document.querySelectorAll("#tableBody tr");
+    const containerTop = container.scrollTop;
+    const containerHeight = container.clientHeight;
+
+    // Find visible rows - check first row that's fully or partially visible
+    let visibleMonth = null;
+    for (const row of rows) {
+      const rowTop = row.offsetTop - containerTop;
+      // Consider row visible if it's slightly above or within viewport
+      if (rowTop < 50) {
+        // Allow 50px buffer above
+        const [month] = row.cells[0].textContent.split("/");
+        visibleMonth = parseInt(month) - 1;
+      }
+    }
+
+    // Update active state
+    buttons.forEach((button, index) => {
+      button.classList.toggle("active", index === visibleMonth);
+    });
+  };
+
+  // Listen for scroll events
+  container.addEventListener("scroll", updateActiveMonth);
+
+  // Initial update
+  setTimeout(updateActiveMonth, 0);
+}
+
+// Modify updateUI function to include month picker
 function updateUI(data) {
   const tableBody = document.getElementById("tableBody");
   tableBody.innerHTML = "";
@@ -247,6 +341,8 @@ function updateUI(data) {
   data.temperatures.reverse().forEach(({ date, temp, color }) => {
     addTableRow(date, temp, color);
   });
+
+  createMonthPicker(data);
 
   if (data.lastCompletedRow) {
     markCompletedRows(data.lastCompletedRow);
