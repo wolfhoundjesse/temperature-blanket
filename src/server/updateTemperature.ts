@@ -1,9 +1,13 @@
 import fs from 'fs/promises'
 import path from 'path'
-import type { Temperature, TemperatureData } from '../shared/types'
+import type { Temperature, TemperatureData, WeatherResponse } from '../shared/types'
+import { config } from 'dotenv'
 
-const CITY = process.env.CITY || 'Toronto'
-const OPENWEATHER_API_KEY = process.env.OPENWEATHER_API_KEY
+config()
+
+const OPENWEATHER_API_KEY = process.env.WEATHER_API_KEY
+const LATITUDE = process.env.WEATHER_LAT || 39.0321
+const LONGITUDE = process.env.WEATHER_LON || -76.5027
 
 const colorRanges = [
   { min: 100, max: Infinity, color: 'Bright Orange' },
@@ -25,20 +29,23 @@ function getYarnColor(temperature: number): string {
 
 async function updateTemperatureData() {
   try {
-    // Fetch current weather using native fetch
+    // Fetch weather data with proper typing
     const response = await fetch(
-      `https://api.openweathermap.org/data/2.5/weather?q=${CITY}&appid=${OPENWEATHER_API_KEY}&units=imperial`
+      `https://api.openweathermap.org/data/3.0/onecall?lat=${LATITUDE}&lon=${LONGITUDE}&appid=${OPENWEATHER_API_KEY}&units=imperial&exclude=minutely,hourly,alerts,current`
     )
-    const weatherData = await response.json()
+    const weatherData = (await response.json()) as WeatherResponse
+
+    // Get today's weather (first item in daily array)
+    const todayWeather = weatherData.daily[0]
 
     // Read existing data
     const dataPath = path.join(__dirname, 'temperature_data.json')
     const fileContent = await fs.readFile(dataPath, 'utf-8')
     const existingData: TemperatureData = JSON.parse(fileContent)
 
-    // Create new entry
+    // Create new entry using max temperature for the day
     const today = new Date()
-    const temp = Math.round(weatherData.main.temp)
+    const temp = Math.round(todayWeather.temp.max)
     const newEntry: Temperature = {
       date: today.toISOString().split('T')[0],
       temp: temp,

@@ -1,5 +1,4 @@
 import m from 'mithril'
-import type { TemperatureResponse } from '../shared/types'
 import { createMonthData, MonthPicker, monthPickerStyles, MONTHS } from './components/MonthPicker'
 import { TemperatureTable } from './components/TemperatureTable'
 import { store } from './store'

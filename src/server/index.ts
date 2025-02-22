@@ -1,11 +1,14 @@
 import { existsSync, readFileSync, writeFileSync } from 'fs'
 import { dirname, join } from 'path'
 import { fileURLToPath } from 'url'
+import { config } from 'dotenv'
 import type { TemperatureData, TemperatureResponse } from '../shared/types'
+
+// Load environment variables from .env file
+config()
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const TEMPERATURE_DATA_FILE = join(__dirname, 'temperature_data.json')
-
 
 // Initialize with sample data if needed
 const defaultData: TemperatureData = {
