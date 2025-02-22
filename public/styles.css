@@ -1,0 +1,191 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background-color: #f5f5f5;
+}
+
+.content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #4CAF50;
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 30px;
+}
+
+.table-container {
+    max-height: calc(100vh - 150px);
+    overflow-y: auto;
+    margin: 20px 0;
+    position: relative;
+}
+
+.month-header {
+    background: #f8f9fa;
+    text-align: center;
+    font-size: 1.2em;
+    color: #495057;
+    font-weight: 500;
+    letter-spacing: 1px;
+    position: sticky;
+    top: 0;
+    z-index: 5;
+}
+
+.completed-row {
+    background-color: #e8f5e9 !important;  /* Light green background */
+}
+
+.completed-row:nth-child(even) {
+    background-color: #c8e6c9 !important;  /* Slightly darker green for even rows */
+}
+
+tr {
+    cursor: pointer;  /* Show pointer cursor on rows */
+}
+
+#jumpToLastCompleted {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 10px;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.month-picker-vertical {
+    position: fixed;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: white;
+    padding: 10px;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.month-picker-vertical .month-button {
+    display: block;
+    width: 100%;
+    padding: 8px 12px;
+    margin: 4px 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+    text-align: left;
+    color: #666;
+}
+
+.month-picker-grid {
+    position: fixed;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: white;
+    padding: 10px;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5px;
+    width: 150px;
+}
+
+.month-picker-grid .month-button {
+    padding: 8px 4px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    text-align: center;
+    color: #666;
+    font-size: 0.9em;
+}
+
+.month-button:disabled {
+    color: #ccc;
+    cursor: not-allowed;
+}
+
+.month-button.active {
+    background: #e8f5e9;
+    color: #4CAF50;
+    font-weight: bold;
+}
+
+/* Sticky header styles */
+thead tr {
+    position: sticky;
+    top: 0;
+    z-index: 3;  /* Increased z-index */
+    background: white;
+}
+
+.month-header td {
+    padding: 8px;
+}
+
+.month-header img {
+    max-height: 40px;
+    width: auto;
+}
+
+/* Ensure sticky elements have a background */
+th {
+    background: #4CAF50 !important;
+}
+
+/* Ensure regular rows appear below sticky elements */
+tbody tr:not(.month-header) {
+    position: relative;
+    z-index: 1;
+}
+
+#lastUpdated {
+    text-align: center;
+    color: #666;
+    margin: 10px auto;
+    font-size: 0.8em;
+    max-width: 600px;
+}
+
+/* Column-specific styles */
+th:nth-child(1), td:nth-child(1) { width: 40%; }  /* Date column */
+th:nth-child(2), td:nth-child(2) { 
+    width: 30%; 
+    text-align: center;
+}
+th:nth-child(3), td:nth-child(3) { 
+    width: 30%; 
+    text-align: center;
+} 
