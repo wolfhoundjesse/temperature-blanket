@@ -5,7 +5,7 @@ import type { TemperatureData, TemperatureResponse } from '../shared/types'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const TEMPERATURE_DATA_FILE = join(__dirname, 'temperature_data.json')
-const PUBLIC_DIR = join(__dirname, '../../public')
+
 
 // Initialize with sample data if needed
 const defaultData: TemperatureData = {
