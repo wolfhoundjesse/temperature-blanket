@@ -46,8 +46,10 @@ async function updateTemperatureData() {
     // Create new entry using max temperature for the day
     const today = new Date()
     const temp = Math.round(todayWeather.temp.max)
+    const formattedDate = `${today.getMonth() + 1}/${today.getDate()}/${today.getFullYear().toString().slice(-2)}`
+
     const newEntry: Temperature = {
-      date: today.toISOString().split('T')[0],
+      date: formattedDate,
       temp: temp,
       color: getYarnColor(temp),
     }
