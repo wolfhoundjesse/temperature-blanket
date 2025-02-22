@@ -11,7 +11,10 @@
     "lint": "eslint . --ext .ts,.tsx",
     "lint:fix": "eslint . --ext .ts,.tsx --fix",
     "format": "prettier --write \"**/*.{ts,tsx,json,md}\"",
-    "format:check": "prettier --check \"**/*.{ts,tsx,json,md}\""
+    "format:check": "prettier --check \"**/*.{ts,tsx,json,md}\"",
+    "build:prod": "NODE_ENV=production bun build ./src/client/app.ts --outdir ./public/client --target browser --minify",
+    "start:prod": "NODE_ENV=production bun run src/server/index.ts",
+    "deploy": "bun run build:prod && bun run start:prod"
   },
   "devDependencies": {
     "@types/bun": "latest",
