@@ -1,55 +1,15 @@
 import m from 'mithril'
-import { store } from '../store'
+import type { TemperatureResponse } from '../../shared/types'
+import TemperatureData from '../models/TemperatureData'
 
 interface TemperatureTableAttrs {
-  data: Array<{
-    date: string
-    temperature: number
-    color: string
-  }>
+  data: TemperatureResponse
 }
 
 export const TemperatureTable: m.Component<TemperatureTableAttrs> = {
-  oncreate(vnode) {
-    if (store.lastCompletedRow) {
-      alert('oncreate called')
-      const completedRow = document.querySelector(`tr[data-date="${store.lastCompletedRow}"]`)
-      const container = document.querySelector('.table-body')
-
-      if (completedRow && container) {
-        const rowTop = (completedRow as HTMLElement).offsetTop
-        const containerHeight = container.clientHeight
-        const scrollPosition = rowTop - containerHeight / 2
-
-        container.scrollTop = scrollPosition
-      }
-    }
-  },
-
-  view({ attrs: { data } }) {
-    // Function to check if a row is completed
-    const isCompleted = (date: string) => {
-      if (!store.lastCompletedRow) return false
-      const rowDate = new Date(date)
-      const completedDate = new Date(store.lastCompletedRow)
-      return rowDate <= completedDate
-    }
-
-    const handleRowClick = (date: string) => {
-      store.setLastCompletedRow(date)
-    }
-
-    const groupedByMonth = data.reduce(
-      (acc, entry) => {
-        const date = new Date(entry.date)
-        const monthKey = date.toLocaleString('default', { month: 'long' })
-        if (!acc[monthKey]) acc[monthKey] = []
-        acc[monthKey].push(entry)
-        return acc
-      },
-      {} as Record<string, typeof data>
-    )
-
+  oninit: TemperatureData.loadData,
+  view: function () {
+    console.log('TempData', TemperatureData.data)
     return m('div.table-container', [
       m('div.table-header', [
         m('table', [
@@ -62,7 +22,7 @@ export const TemperatureTable: m.Component<TemperatureTableAttrs> = {
         m('table', [
           m(
             'tbody',
-            data && data.length > 0
+            TemperatureData.data && TemperatureData.data.temperatures.length > 0
               ? Object.entries(groupedByMonth).flatMap(([month, entries]) => [
                   m(
                     'tr.month-header',
@@ -83,7 +43,7 @@ export const TemperatureTable: m.Component<TemperatureTableAttrs> = {
                       {
                         'data-date': entry.date,
                         class: isCompleted(entry.date) ? 'completed-row' : '',
-                        onclick: () => handleRowClick(entry.date),
+                        // onclick: () => handleRowClick(entry.date),
                         style: 'cursor: pointer',
                       },
                       [m('td', entry.date), m('td', `${entry.temperature}°F`), m('td', entry.color)]
@@ -93,9 +53,9 @@ export const TemperatureTable: m.Component<TemperatureTableAttrs> = {
               : m('tr', [
                   m(
                     'td[colspan=3]',
-                    store.showLoading
-                      ? 'Loading temperature data...'
-                      : 'No temperature data available'
+                    TemperatureData.data && TemperatureData.data.temperatures.length === 0
+                      ? 'No temperature data available'
+                      : 'Loading temperature data...'
                   ),
                 ])
           ),
@@ -103,4 +63,24 @@ export const TemperatureTable: m.Component<TemperatureTableAttrs> = {
       ]),
     ])
   },
+}
+
+const groupedByMonth = TemperatureData.data
+  ? TemperatureData.data.temperatures.reduce(
+      (acc, entry) => {
+        const date = new Date(entry.date)
+        const monthKey = date.toLocaleString('default', { month: 'long' })
+        if (!acc[monthKey]) acc[monthKey] = []
+        acc[monthKey].push(entry)
+        return acc
+      },
+      {} as Record<string, typeof TemperatureData.data.temperatures>
+    )
+  : {}
+
+const isCompleted = (date: string) => {
+  if (!TemperatureData?.data?.lastCompletedRow) return false
+  const rowDate = new Date(date)
+  const completedDate = new Date(TemperatureData.data.lastCompletedRow)
+  return rowDate <= completedDate
 }
